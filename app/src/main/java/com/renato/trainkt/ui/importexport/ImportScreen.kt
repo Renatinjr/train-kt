@@ -104,9 +104,11 @@ fun ImportScreen(
                 value = state.raw,
                 onValueChange = viewModel::setText,
                 label = { Text("Paste JSON or plain text") },
+                // Cap the height so a large paste scrolls inside the field instead of
+                // growing to fill the whole screen.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 160.dp),
+                    .heightIn(min = 160.dp, max = 240.dp),
             )
             OutlinedButton(
                 onClick = viewModel::parse,
