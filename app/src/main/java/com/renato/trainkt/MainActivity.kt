@@ -6,9 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.renato.trainkt.ui.navigation.AppNavHost
 import com.renato.trainkt.ui.theme.TrainKtTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,15 +19,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             TrainKtTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    Placeholder()
+                    AppNavHost()
                 }
             }
         }
     }
-}
-
-// Temporary scaffold body — replaced by AppNavHost once screens land.
-@Composable
-private fun Placeholder() {
-    Text("TrainKT")
 }
