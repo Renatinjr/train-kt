@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base theme; Compose drives the actual colors via TrainKtTheme.
+         This keeps the system bars dark before Compose takes over. -->
+    <style name="Theme.TrainKT" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#0a0a0f</item>
+        <item name="android:navigationBarColor">#0a0a0f</item>
+        <item name="android:windowBackground">#0a0a0f</item>
+    </style>
+</resources>
