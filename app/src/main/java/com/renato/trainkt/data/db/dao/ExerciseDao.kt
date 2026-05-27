@@ -1,10 +1,9 @@
 package com.renato.trainkt.data.db.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.renato.trainkt.data.db.entities.Exercise
 
 @Dao
@@ -13,10 +12,12 @@ interface ExerciseDao {
     @Query("SELECT * FROM exercises WHERE sectionId = :sectionId ORDER BY position")
     suspend fun getExercisesForSection(sectionId: String): List<Exercise>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    // @Upsert so editing an exercise updates it in place instead of delete+insert
+    // (which would cascade-delete its variations before they're rewritten).
+    @Upsert
     suspend fun upsert(exercise: Exercise)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     suspend fun upsertAll(exercises: List<Exercise>)
 
     @Update

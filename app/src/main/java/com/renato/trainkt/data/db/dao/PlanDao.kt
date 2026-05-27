@@ -2,11 +2,10 @@ package com.renato.trainkt.data.db.dao
 
 import androidx.room.Dao
 import androidx.room.Embedded
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import androidx.room.Upsert
 import com.renato.trainkt.data.db.entities.WorkoutPlan
 import com.renato.trainkt.data.db.relations.PlanWithDays
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +43,8 @@ interface PlanDao {
     @Query("SELECT * FROM workout_plans WHERE id = :planId")
     suspend fun getPlanTree(planId: String): PlanWithDays?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    // @Upsert updates in place (no DELETE), so re-saving a plan never cascade-wipes its days.
+    @Upsert
     suspend fun upsert(plan: WorkoutPlan)
 
     @Update
