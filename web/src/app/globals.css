@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* Tokens ported from app/.../ui/theme/Color.kt — dark-first, like the Android app. */
+@theme {
+  --color-bg: #0a0a0f;
+  --color-surface: #18181f;
+  --color-elevated: #202028;
+  --color-border: rgb(255 255 255 / 0.08);
+  --color-text: #f0f0f5;
+  --color-text-2: #888896;
+  --color-muted: #55555f;
+  --color-accent: #4a9eff;
+  --color-amber: #e0a53d;
+  --color-danger: #e05656;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Uppercase micro label (Type.kt labelSmall: 11sp bold, 1.2 tracking). */
+@utility label-xs {
+  @apply text-[11px] font-bold uppercase tracking-[0.11em] text-muted;
+}
+@utility card {
+  @apply rounded-[14px] border border-border bg-surface;
+}
+@utility input {
+  @apply w-full rounded-lg border border-border bg-elevated px-3 py-2.5 text-[15px] text-text outline-none transition placeholder:text-muted focus:border-accent;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-[13px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-accent text-[#06101f] hover:brightness-110;
+}
+@utility btn-ghost {
+  @apply btn border border-border text-text hover:bg-elevated;
+}
+@utility btn-danger {
+  @apply btn bg-danger text-white hover:brightness-110;
+}
+@utility icon-btn {
+  @apply inline-flex size-9 items-center justify-center rounded-full text-text-2 transition hover:bg-elevated hover:text-text disabled:pointer-events-none disabled:opacity-30;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(2px);
+}

@@ -36,6 +36,19 @@ project in Android Studio and launch on a device/emulator, or `adb install` the 
 (No emulator AVD/system image is installed on this machine, so the app can't be launched
 headless from the CLI here.)
 
+## Web version (`web/`)
+
+A Next.js port of the app with accounts and server-side storage. See [`web/README.md`](web/README.md).
+
+```bash
+cd web
+npm install
+npm run dev        # http://localhost:3000 — sign up, then create or import a plan
+```
+
+It uses the same import/export JSON format, so you can move plans between the Android app
+and the web app.
+
 ## Import formats
 
 ### JSON
