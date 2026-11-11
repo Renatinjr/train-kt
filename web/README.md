@@ -11,6 +11,16 @@ npm run build && npm start   # production
 npm test              # Vitest: parsers, schedule math, DB layer and per-user isolation
 ```
 
+**With Bun** (recommended for production):
+
+```bash
+bun install
+bun run bun:build
+bun run bun:start       # runs Next.js on the Bun runtime
+```
+
+On Bun, the app uses the built-in `bun:sqlite`, because Bun can't load the `better-sqlite3` native addon. On Node it uses `better-sqlite3`. Both read the same database file. See `src/db/index.ts`.
+
 The database file is created and migrated automatically on first request. Its path is `./data/trainkt.db`, and you can override it with `DATABASE_URL` (see `.env.example`).
 
 Requirements:

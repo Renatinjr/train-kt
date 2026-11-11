@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "bun:dev": "bun --bun next dev",
+    "bun:build": "bun --bun next build",
+    "bun:start": "bun --bun next start",
     "lint": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "node scripts/migrate.mjs",
     "test": "vitest run"
   },
   "dependencies": {
