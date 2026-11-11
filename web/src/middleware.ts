@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { isSecureRequest, SESSION_COOKIE, SESSION_TTL_MS, sessionCookieOptions } from "@/lib/cookie";
 
 /*
  * Cheap gate: requests without a session cookie go to /login. The session itself is validated
@@ -6,9 +7,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * is slid forward to match the DB-side sliding expiry.
  */
 
-const SESSION_COOKIE = "trainkt_session";
 const PUBLIC_PATHS = ["/login", "/register"];
-const TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -24,13 +23,8 @@ export function middleware(req: NextRequest) {
 
   const res = NextResponse.next();
   if (session && req.method === "GET") {
-    res.cookies.set(SESSION_COOKIE, session, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      expires: new Date(Date.now() + TTL_MS),
-    });
+    const secure = isSecureRequest(req.headers, req.nextUrl.protocol);
+    res.cookies.set(SESSION_COOKIE, session, sessionCookieOptions(Date.now() + SESSION_TTL_MS, secure));
   }
   return res;
 }

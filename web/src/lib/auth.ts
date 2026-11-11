@@ -1,27 +1,22 @@
 import "server-only";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { getDb } from "@/db";
 import type { User } from "@/db/schema";
-import { createSessionRow, deleteSessionRow, SESSION_TTL_MS, validateSession } from "./users";
+import { isSecureRequest, SESSION_COOKIE, sessionCookieOptions } from "./cookie";
+import { createSessionRow, deleteSessionRow, validateSession } from "./users";
 
-export const SESSION_COOKIE = "trainkt_session";
-
-function cookieOptions(expiresAt: number) {
-  return {
-    httpOnly: true,
-    sameSite: "lax" as const,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    expires: new Date(expiresAt),
-  };
-}
+export { SESSION_COOKIE };
 
 /** Create a session and set the cookie. Only callable from Server Actions / route handlers. */
 export async function startSession(userId: string) {
   const { id, expiresAt } = createSessionRow(getDb(), userId);
-  (await cookies()).set(SESSION_COOKIE, id, cookieOptions(expiresAt));
+  const h = await headers();
+  // Server actions are same-origin; Origin carries the scheme the browser used.
+  const origin = h.get("origin");
+  const secure = isSecureRequest(h, origin ? new URL(origin).protocol : undefined);
+  (await cookies()).set(SESSION_COOKIE, id, sessionCookieOptions(expiresAt, secure));
 }
 
 export async function endSession() {
@@ -44,5 +39,3 @@ export async function requireUser(): Promise<User> {
   if (!user) redirect("/login");
   return user;
 }
-
-export { SESSION_TTL_MS };
