@@ -6,6 +6,7 @@ import { savePlanAction } from "@/app/actions/app";
 import { DAY_COLORS } from "@/lib/models";
 import { IconDown, IconPlus, IconTrash, IconUp } from "./icons";
 import { ColorPickerRow, ErrorBanner } from "./ui";
+import { uuid } from "@/lib/uuid";
 
 export interface DayDraft {
   key: string;
@@ -41,7 +42,7 @@ export function PlanForm({
     setDays((ds) => [
       ...ds,
       {
-        key: crypto.randomUUID(),
+        key: uuid(),
         name: "",
         dayLabel: `Day ${ds.length + 1}`,
         colorHex: DAY_COLORS[ds.length % DAY_COLORS.length],

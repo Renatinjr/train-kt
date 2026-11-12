@@ -2,6 +2,7 @@ import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import type { DB } from "@/db";
 import { exercises, setLogs, workoutDays, workoutPlans, workoutSections } from "@/db/schema";
 import { ownedExercise } from "./plans";
+import { uuid } from "./uuid";
 
 /** Completed set indices per exercise for one day of the plan on [date]. */
 export function getCompletedSets(db: DB, userId: string, dayId: string, date: string): Record<string, number[]> {
@@ -32,7 +33,7 @@ export function toggleSet(db: DB, userId: string, exerciseId: string, date: stri
       return false;
     }
     tx.insert(setLogs)
-      .values({ id: crypto.randomUUID(), userId, exerciseId, date, setIndex, completedAt: Date.now() })
+      .values({ id: uuid(), userId, exerciseId, date, setIndex, completedAt: Date.now() })
       .run();
     return true;
   });

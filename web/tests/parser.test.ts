@@ -63,3 +63,25 @@ describe("import parsers (ported from ParserTest.kt)", () => {
     expect(exportFileName(r.plan)).toBe("push-pull-legs.json");
   });
 });
+
+describe("uuid fallback (plain-http browsers have no crypto.randomUUID)", () => {
+  it("builds valid v4 UUIDs from getRandomValues", async () => {
+    const { uuid } = await import("@/lib/uuid");
+    const { z } = await import("zod");
+    const original = globalThis.crypto.randomUUID;
+    try {
+      // @ts-expect-error simulate an insecure browser context
+      globalThis.crypto.randomUUID = undefined;
+      const ids = Array.from({ length: 200 }, uuid);
+      for (const id of ids) {
+        expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+        expect(z.string().uuid().safeParse(id).success).toBe(true);
+      }
+      expect(new Set(ids).size).toBe(ids.length);
+      const r = parseText(sampleText);
+      expect(r.ok).toBe(true);
+    } finally {
+      globalThis.crypto.randomUUID = original;
+    }
+  });
+});

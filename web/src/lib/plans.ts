@@ -8,6 +8,7 @@ import {
   workoutSections,
 } from "@/db/schema";
 import type { DayDetail, PlanDetail, PlanRow } from "./models";
+import { uuid } from "./uuid";
 
 /*
  * Port of data/repository/PlanRepository.kt + data/db/dao/PlanDao.kt, scoped per user.
@@ -239,7 +240,7 @@ export function savePlanWithDays(db: DB, userId: string, input: PlanInput, activ
         .where(eq(workoutPlans.id, planId))
         .run();
     } else {
-      planId = crypto.randomUUID();
+      planId = uuid();
       const hasActive = tx
         .select({ id: workoutPlans.id })
         .from(workoutPlans)
@@ -269,7 +270,7 @@ export function savePlanWithDays(db: DB, userId: string, input: PlanInput, activ
     const keptIds: string[] = [];
     input.days.forEach((d, position) => {
       // Only reuse ids that already belong to this plan; anything else becomes a new day.
-      const id = d.id && existingIds.has(d.id) ? d.id : crypto.randomUUID();
+      const id = d.id && existingIds.has(d.id) ? d.id : uuid();
       keptIds.push(id);
       tx.insert(workoutDays)
         .values({ id, planId: planId!, name: d.name, dayLabel: d.dayLabel, colorHex: d.colorHex, note: d.note, position })
@@ -327,7 +328,7 @@ export function addSection(db: DB, userId: string, dayId: string, title: string)
     .from(workoutSections)
     .where(eq(workoutSections.dayId, dayId))
     .get();
-  const id = crypto.randomUUID();
+  const id = uuid();
   db.insert(workoutSections)
     .values({ id, dayId, title, position: (max?.m ?? -1) + 1 })
     .run();
@@ -381,7 +382,7 @@ export function saveExercise(db: DB, userId: string, input: ExerciseInput): stri
       if (owner.sectionId !== input.sectionId) throw new NotFoundError("Exercise not in section");
       tx.update(exercises).set(fields).where(eq(exercises.id, id)).run();
     } else {
-      id = crypto.randomUUID();
+      id = uuid();
       const max = tx
         .select({ m: sql<number | null>`max(${exercises.position})` })
         .from(exercises)
@@ -395,7 +396,7 @@ export function saveExercise(db: DB, userId: string, input: ExerciseInput): stri
     const vars = input.variations
       .filter((v) => v.label.trim() !== "")
       .map((v, position) => ({
-        id: crypto.randomUUID(),
+        id: uuid(),
         exerciseId: id!,
         label: v.label.trim(),
         isAlternative: v.isAlternative,

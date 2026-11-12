@@ -5,6 +5,7 @@ import type { ExerciseDetail } from "@/lib/models";
 import { DAY_COLORS } from "@/lib/models";
 import { IconPlus, IconTrash } from "./icons";
 import { ErrorBanner, Modal } from "./ui";
+import { uuid } from "@/lib/uuid";
 
 export interface ExerciseDraft {
   id?: string;
@@ -57,7 +58,7 @@ export function ExerciseEditor({
   const setVar = (key: string, patch: Partial<ExerciseDraft["variations"][number]>) =>
     setD((x) => (x ? { ...x, variations: x.variations.map((v) => (v.key === key ? { ...v, ...patch } : v)) } : x));
   const addVar = (isAlternative: boolean) =>
-    setD((x) => (x ? { ...x, variations: [...x.variations, { key: crypto.randomUUID(), label: "", isAlternative }] } : x));
+    setD((x) => (x ? { ...x, variations: [...x.variations, { key: uuid(), label: "", isAlternative }] } : x));
 
   const field = (label: string, key: "name" | "sets" | "reps" | "rest" | "badgeLabel", placeholder = "") => (
     <div>

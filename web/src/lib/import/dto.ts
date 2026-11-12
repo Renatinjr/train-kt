@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { DayDetail, ExerciseDetail, PlanDetail, SectionDetail } from "../models";
 import { DEFAULT_COLOR } from "../models";
+import { uuid } from "../uuid";
 
 /**
  * Port of app/.../data/model/ImportDto.kt + DtoMappers.kt. The JSON shape is identical to the
@@ -59,14 +60,14 @@ const orIfBlank = (v: string, fallback: string) => (v.trim() === "" ? fallback :
 
 /** Convert a parsed DTO into a linked plan tree with fresh ids and 0-based positions (inactive). */
 export function toPlanDetail(dto: PlanFileDto, createdAt: number = Date.now()): PlanDetail {
-  const planId = crypto.randomUUID();
+  const planId = uuid();
   const days: DayDetail[] = dto.plan.days.map((d, dayIndex) => {
-    const dayId = crypto.randomUUID();
+    const dayId = uuid();
     const dayColor = orIfBlank(d.color, DEFAULT_COLOR);
     const sections: SectionDetail[] = d.sections.map((s, sectionIndex) => {
-      const sectionId = crypto.randomUUID();
+      const sectionId = uuid();
       const exercises: ExerciseDetail[] = s.exercises.map((e, exIndex) => {
-        const exId = crypto.randomUUID();
+        const exId = uuid();
         return {
           exercise: {
             id: exId,
@@ -82,7 +83,7 @@ export function toPlanDetail(dto: PlanFileDto, createdAt: number = Date.now()): 
             position: exIndex,
           },
           variations: e.variations.map((v, vIndex) => ({
-            id: crypto.randomUUID(),
+            id: uuid(),
             exerciseId: exId,
             label: v.label,
             isAlternative: v.isAlternative,

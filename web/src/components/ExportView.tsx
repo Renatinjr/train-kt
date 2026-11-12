@@ -43,7 +43,19 @@ export function ExportView({
           type="button"
           className="btn-ghost"
           onClick={async () => {
-            await navigator.clipboard.writeText(json);
+            // navigator.clipboard only exists on HTTPS/localhost; fall back to execCommand.
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(json);
+            } else {
+              const ta = document.createElement("textarea");
+              ta.value = json;
+              ta.style.position = "fixed";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand("copy");
+              ta.remove();
+            }
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
           }}

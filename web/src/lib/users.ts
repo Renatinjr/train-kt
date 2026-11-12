@@ -3,6 +3,7 @@ import { and, eq, gt, lt } from "drizzle-orm";
 import { randomBytes } from "node:crypto";
 import type { DB } from "@/db";
 import { sessions, users, type User } from "@/db/schema";
+import { uuid } from "./uuid";
 
 /** Framework-free account + session primitives (testable without Next.js). */
 
@@ -20,7 +21,7 @@ export async function createUser(db: DB, email: string, password: string, name =
   const existing = db.select({ id: users.id }).from(users).where(eq(users.email, normalized)).get();
   if (existing) throw new EmailTakenError("An account with this email already exists.");
   const user: User = {
-    id: crypto.randomUUID(),
+    id: uuid(),
     email: normalized,
     passwordHash: await bcrypt.hash(password, 12),
     name: name.trim(),
